@@ -1,0 +1,16 @@
+---
+// Landing page: prerendered, zero client JS. The signup island arrives in the next block.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+---
+
+<BaseLayout
+  title="Try FX Replay Free — Backtest your strategy on real market history"
+  description="Testing a strategy live costs time and money. Put your strategy to the test and define your methodology."
+>
+  <Hero />
+  <Steps />
+  <Faq />
+</BaseLayout>

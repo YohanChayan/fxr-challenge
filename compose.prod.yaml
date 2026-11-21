@@ -1,0 +1,23 @@
+# Production overlay for a host running the shared Caddy on the external `edge` network.
+#
+#   docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+#
+# or put COMPOSE_FILE=compose.yaml:compose.prod.yaml in the server's .env, and plain
+# `docker compose …` uses both files.
+#
+# No port is published: Docker bypasses the host firewall, and Caddy reaches
+# fxr-challenge-web:4321 over `edge` (site file: docker/prod/caddy/).
+
+services:
+  fxr-web:
+    ports: !reset []
+    environment:
+      # Caddy is the socket peer here, so the rate limiter takes the client IP from the
+      # right-most X-Forwarded-For entry, which Caddy sets. See src/lib/server/rate-limit.ts.
+      TRUST_PROXY: '1'
+    networks:
+      - edge
+
+networks:
+  edge:
+    external: true

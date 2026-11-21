@@ -1,0 +1,32 @@
+---
+import logo from '../assets/logos/FXReplayLogo.svg';
+---
+
+<header class="site-header">
+  <div class="inner">
+    <img src={logo.src} width="160" height="21" alt="FX Replay" />
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 20px 16px;
+  }
+
+  img {
+    width: 160px;
+    aspect-ratio: 1609 / 209;
+  }
+
+  @media (min-width: 768px) {
+    .inner {
+      padding: 24px 32px;
+    }
+  }
+</style>

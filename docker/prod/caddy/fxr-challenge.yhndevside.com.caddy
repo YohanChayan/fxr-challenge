@@ -1,0 +1,7 @@
+# Production. Copy to /srv/platform/caddy/sites/ on the server, then reload Caddy. Point the DNS
+# record at the host first, so the first certificate attempt does not fail and back off.
+fxr-challenge.yhndevside.com {
+	encode zstd gzip
+
+	reverse_proxy fxr-challenge-web:4321
+}

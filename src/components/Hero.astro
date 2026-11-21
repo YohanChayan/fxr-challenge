@@ -1,0 +1,113 @@
+---
+import SignupForm from './SignupForm.vue';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="inner">
+    <p class="eyebrow">Testing a strategy live costs time and money.</p>
+    <h1 id="hero-title">Backtest your strategy on real market history</h1>
+    <p class="subhead">Put your strategy to the test and define your methodology.</p>
+
+    <div class="cta-group">
+      <a class="cta" href="#signup">
+        Try FX Replay free
+      </a>
+      <!--
+        EXPERIMENT SLOT — trust line "No credit card required".
+        This is the experiment variant: do NOT render it here. The experiment block adds it
+        behind a flag, directly below the CTA.
+      -->
+    </div>
+
+    <!-- The CTA above links here. client:visible: the SSR'd form reserves its space, so
+         hydrating later causes no layout shift. -->
+    <div id="signup" class="signup">
+      <SignupForm client:visible />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background: var(--bg-primary);
+  }
+
+  .inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 48px 16px 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .eyebrow {
+    color: var(--text-brand-small);
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+
+  h1 {
+    font-size: clamp(2.125rem, 1.4rem + 3.6vw, 4rem);
+    letter-spacing: -0.01em;
+    max-width: 18ch;
+    color: var(--text-primary);
+  }
+
+  .subhead {
+    color: var(--text-secondary);
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+    max-width: 40ch;
+  }
+
+  .cta-group {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 28px;
+    border-radius: 8px;
+    background: var(--btn-bg-primary-active);
+    color: var(--btn-text);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 1.0625rem;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .cta:hover {
+    background: var(--btn-bg-primary-hover);
+  }
+
+  .cta:active {
+    background: var(--btn-bg-primary-pressed);
+  }
+
+  .signup {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  @media (min-width: 768px) {
+    .inner {
+      padding: 80px 32px 96px;
+      gap: 20px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .inner {
+      padding: 112px 32px 128px;
+    }
+  }
+</style>

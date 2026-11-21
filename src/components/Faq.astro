@@ -1,0 +1,94 @@
+---
+const faqs = [
+  {
+    question: 'Do I need to provide personal information to sign up?',
+    answer:
+      'No. You can sign up with just an email address. We only collect the minimum information required to create your account.',
+  },
+  {
+    question: 'Can I test my strategy with real market data?',
+    answer: 'Yes. You replay real historical market data.',
+  },
+  {
+    question: 'What are the next steps once I register?',
+    answer: 'You choose your first market and date and begin your replay session.',
+  },
+];
+---
+
+<section class="faq" aria-labelledby="faq-title">
+  <div class="inner">
+    <h2 id="faq-title">FAQ</h2>
+    <div class="list">
+      {faqs.map(({ question, answer }) => (
+        <details>
+          <summary>{question}</summary>
+          <p>{answer}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 56px 16px 72px;
+  }
+
+  h2 {
+    font-size: clamp(1.625rem, 1.3rem + 1.4vw, 2.25rem);
+    margin-bottom: 24px;
+  }
+
+  .list {
+    max-width: 800px;
+    border-top: 1px solid var(--border-secondary);
+  }
+
+  details {
+    border-bottom: 1px solid var(--border-secondary);
+  }
+
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 700;
+    font-size: 1.0625rem;
+    color: var(--text-primary);
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '+' / '';
+    flex: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--text-brand-small);
+  }
+
+  details[open] summary::after {
+    content: '−' / '';
+  }
+
+  p {
+    padding-bottom: 20px;
+    color: var(--text-secondary);
+    max-width: 65ch;
+  }
+
+  @media (min-width: 768px) {
+    .inner {
+      padding: 80px 32px 96px;
+    }
+  }
+</style>

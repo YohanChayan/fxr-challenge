@@ -1,0 +1,14 @@
+node_modules
+dist
+.astro
+data
+.env*
+qa-artifacts
+.git
+.claude
+.vscode
+.DS_Store
+npm-debug.log*
+Dockerfile
+.dockerignore
+compose*.yaml
