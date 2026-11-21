@@ -414,6 +414,8 @@ tests pass.
 
 **Did myself:**
 
+- **Taxonomy approach.** I led the design of the event taxonomy: I defined the event types per
+  user scenario, then delegated the implementation.
 - **Inline script.** The `<head>` script is `bootHead()` serialised with `Function#toString`, so
   the same code is unit-tested and also run from the built `dist/` in a clean VM.
 - **GA4 parameter.** GA4 gets `fxr_session_id`: gtag has its own `session_id` field.

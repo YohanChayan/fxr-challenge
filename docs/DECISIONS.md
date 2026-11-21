@@ -314,6 +314,15 @@ the origin. A query string can carry an email
 
 ## Stack
 
+### Astro, not a full app framework
+
+This is a small project, and a landing page is mostly content. Astro is built for content
+sites. It renders the page to static HTML at build time and ships no JavaScript by default, which
+is what a fast landing page needs. Interactivity is added only where it is needed (the signup
+and consent components, in Vue), and the Users API runs in the same project as server
+endpoints. That means one deployable, with no separate backend. FX Replay's own site also runs
+Astro.
+
 ### Astro 7, not 6
 
 The brief's context says FX Replay runs Astro 6; the current stable release is Astro 7
@@ -372,11 +381,6 @@ firewall.
 - **CI/CD**: on every push, run typecheck, lint, format check and tests, then
   `docker compose build`. On the main branch, push the image to a registry and deploy by
   pulling it, instead of building on the server.
-- **Scheduled backups** of the SQLite volume (the online `backup()` command in the README),
-  copied off the host.
-- **A smaller image**: the runtime carries the whole production `node_modules`. Check which
-  packages the standalone server actually imports and trim the rest.
-
 - **Sessions or real auth for PATCH**, instead of the id-as-capability above, and per-admin
   credentials instead of one shared `ADMIN_API_TOKEN`.
 - **Move the user id out of the PATCH URL** (for example a token in the body or a session), so

@@ -5,8 +5,8 @@ import heroBg from '../assets/hero/hero-bg.webp';
 ---
 
 <section class="hero" aria-labelledby="hero-title">
-  <!-- Decorative image, shown whole at every width (see the styles). It can be the LCP element,
-       so it is eager and high priority; width/height come from the source file. -->
+  {/* Decorative image, shown whole at every width (see the styles). It can be the LCP element,
+       so it is eager and high priority; width/height come from the source file. */}
   <Picture
     src={heroBg}
     formats={['avif', 'webp']}
@@ -26,11 +26,11 @@ import heroBg from '../assets/hero/hero-bg.webp';
     <p class="subhead">Put your strategy to the test and define your methodology.</p>
 
     <div class="cta-group">
-      <!-- The CTA is a button that opens the signup dialog; both are rendered by the island.
-           client:visible: the hero is above the fold, so it hydrates on load. -->
+      {/* The CTA is a button that opens the signup dialog; both are rendered by the island.
+           client:visible: the hero is above the fold, so it hydrates on load. */}
       <SignupIsland client:visible location="hero" />
-      <!-- Experiment trust-line-v1 (docs/experiments/trust-line-v1.md): rendered for everyone,
-           shown by CSS only in the variant arm. display:none also hides it from screen readers. -->
+      {/* Experiment trust-line-v1 (docs/EXPERIMENT.md): rendered for everyone,
+           shown by CSS only in the variant arm. display:none also hides it from screen readers. */}
       <p class="trust-line">No credit card required</p>
     </div>
   </div>

@@ -23,6 +23,14 @@ is render delay. The page was **already over the 2.5 s budget** in this lab prof
 image went in. The render-blocking CSS and the three font files are the likely cause; that is not
 measured yet (see "With more time" below).
 
+### Measured results (live URL)
+
+TODO(me): Lighthouse mobile against https://fxr-challenge.yhndevside.com.
+
+| Run | LCP | CLS | TBT | Performance score |
+| --- | --- | --- | --- | ----------------- |
+| 1   |     |     |     |                   |
+
 ## Performance decisions
 
 ### Loading strategy
@@ -118,11 +126,3 @@ JSON-LD `SoftwareApplication` (`name`, `description`, `url`) with an `Offer` at 
   `--text-brand-small` (about 5.3:1).
 - The FAQ is keyboard-operable through native `<details>`.
 - `prefers-reduced-motion: reduce` disables transitions and smooth scroll.
-
-## Rendering strategy
-
-See "Rendering strategy" above.
-
-## Caching / CDN strategy
-
-## Important production risks
