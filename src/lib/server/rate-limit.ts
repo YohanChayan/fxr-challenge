@@ -3,22 +3,12 @@
 // SINGLE NODE ONLY. State lives in this process's memory: it resets on restart and is not
 // shared between replicas. That matches the one-replica deployment (docs/DECISIONS.md);
 // scaling out needs a shared store first.
+import type { RateLimiter, RateLimiterOptions } from '../../types/rate-limit';
 
 export const RATE_LIMIT_MAX = 5;
 export const RATE_LIMIT_WINDOW_MS = 60_000;
 /** Above this many tracked IPs, expired windows are dropped on the next hit. */
 const PRUNE_THRESHOLD = 10_000;
-
-export type RateLimitResult = { ok: true } | { ok: false; retryAfterSeconds: number };
-
-export type RateLimiter = { hit(key: string): RateLimitResult };
-
-export type RateLimiterOptions = {
-  max?: number;
-  windowMs?: number;
-  /** Milliseconds since the epoch; injectable so tests control time. */
-  now?: () => number;
-};
 
 type Window = { start: number; count: number };
 

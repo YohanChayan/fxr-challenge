@@ -3,6 +3,8 @@ import { Font } from 'astro:assets';
 import '../styles/tokens.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import AnalyticsIsland from '../components/analytics/AnalyticsIsland.vue';
+import { bootScript } from '../experiments/boot';
 
 interface Props {
   title: string;
@@ -32,6 +34,10 @@ const structuredData = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark" />
+    <!-- The single exception to "zero JS outside islands" (DECISIONS.md): sets data-variant
+         (sticky A/B assignment) and data-consent on <html> before first paint. Source:
+         src/experiments/boot.ts. Blocking by design; about 1.7 KB, no network. -->
+    <script is:inline set:html={bootScript()} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content="noindex" />
@@ -53,6 +59,8 @@ const structuredData = {
     <a class="skip-link" href="#main">
       Skip to content
     </a>
+    <!-- client:load: the banner is visible on a first visit, and page_view fires on mount. -->
+    <AnalyticsIsland client:load />
     <SiteHeader />
     <main id="main" tabindex="-1">
       <slot />

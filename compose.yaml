@@ -23,6 +23,9 @@ services:
     build:
       context: .
       target: runtime
+      args:
+        # Public GA4 id, inlined into the page at build time (Dockerfile). Read from .env.
+        PUBLIC_GA4_ID: ${PUBLIC_GA4_ID:-}
     container_name: fxr-challenge-web
     restart: unless-stopped
     init: true # forwards SIGTERM to node, so `down` stops it cleanly

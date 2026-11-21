@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@0.0.86",
+        "--browser",
+        "chromium",
+        "--headless",
+        "--isolated",
+        "--output-dir",
+        "qa-artifacts",
+        "--allowed-origins",
+        "http://localhost:4321;http://127.0.0.1:4321;https://fxr-challenge.yhndevside.com"
+      ]
+    }
+  }
+}

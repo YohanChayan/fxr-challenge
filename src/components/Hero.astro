@@ -1,41 +1,74 @@
 ---
-import SignupForm from './SignupForm.vue';
+import { Picture } from 'astro:assets';
+import SignupIsland from './signup/SignupIsland.vue';
+import heroBg from '../assets/hero/hero-bg.webp';
 ---
 
 <section class="hero" aria-labelledby="hero-title">
+  <!-- Decorative image, shown whole at every width (see the styles). It can be the LCP element,
+       so it is eager and high priority; width/height come from the source file. -->
+  <Picture
+    src={heroBg}
+    formats={['avif', 'webp']}
+    fallbackFormat="webp"
+    widths={[640, 1024, heroBg.width]}
+    sizes="100vw"
+    alt=""
+    aria-hidden="true"
+    loading="eager"
+    fetchpriority="high"
+    class="bg"
+    pictureAttributes={{ class: 'bg-picture' }}
+  />
   <div class="inner">
     <p class="eyebrow">Testing a strategy live costs time and money.</p>
     <h1 id="hero-title">Backtest your strategy on real market history</h1>
     <p class="subhead">Put your strategy to the test and define your methodology.</p>
 
     <div class="cta-group">
-      <a class="cta" href="#signup">
-        Try FX Replay free
-      </a>
-      <!--
-        EXPERIMENT SLOT — trust line "No credit card required".
-        This is the experiment variant: do NOT render it here. The experiment block adds it
-        behind a flag, directly below the CTA.
-      -->
-    </div>
-
-    <!-- The CTA above links here. client:visible: the SSR'd form reserves its space, so
-         hydrating later causes no layout shift. -->
-    <div id="signup" class="signup">
-      <SignupForm client:visible />
+      <!-- The CTA is a button that opens the signup dialog; both are rendered by the island.
+           client:visible: the hero is above the fold, so it hydrates on load. -->
+      <SignupIsland client:visible location="hero" />
+      <!-- Experiment trust-line-v1 (docs/experiments/trust-line-v1.md): rendered for everyone,
+           shown by CSS only in the variant arm. display:none also hides it from screen readers. -->
+      <p class="trust-line">No credit card required</p>
     </div>
   </div>
 </section>
 
 <style>
   .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     background: var(--bg-primary);
   }
 
+  /* Below 1024px the copy spans the full width, so the image would sit behind the text under a
+     near-opaque overlay. Instead it is a band under the CTA, shown whole (no crop). It comes
+     first in the DOM so the browser finds it early; `order` puts it after the copy. The <img>
+     carries width/height, so its box is reserved before it loads (no CLS). */
+  .bg-picture {
+    display: block;
+    order: 1;
+  }
+
+  .bg {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* The image's top edge is dark navy, not --bg-primary: fade it into the page. A mask uses
+       only the alpha of its colours; --bg-primary is opaque, so it reads as "show". */
+    mask-image: linear-gradient(to bottom, transparent, var(--bg-primary) 6%);
+  }
+
   .inner {
+    width: 100%;
     max-width: 1120px;
     margin: 0 auto;
-    padding: 48px 16px 56px;
+    padding: 48px 16px 24px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -69,39 +102,71 @@ import SignupForm from './SignupForm.vue';
     gap: 8px;
   }
 
-  .cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 48px;
-    padding: 12px 28px;
-    border-radius: 8px;
-    background: var(--btn-bg-primary-active);
-    color: var(--btn-text);
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 1.0625rem;
-    text-decoration: none;
-    transition: background-color 150ms ease;
+  .trust-line {
+    display: none;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
   }
 
-  .cta:hover {
-    background: var(--btn-bg-primary-hover);
-  }
-
-  .cta:active {
-    background: var(--btn-bg-primary-pressed);
-  }
-
-  .signup {
-    width: 100%;
-    margin-top: 8px;
+  /* data-variant is set before first paint by the inline <head> script: no flicker, no CLS.
+     The token is variantId('trust-line-v1', 'variant') from src/experiments/flags.ts. */
+  :global(html[data-variant~='CONV-trust-line-v1-variant']) .trust-line {
+    display: block;
   }
 
   @media (min-width: 768px) {
     .inner {
-      padding: 80px 32px 96px;
+      padding: 80px 32px 40px;
       gap: 20px;
+    }
+  }
+
+  /* From 1024px the image is the hero's background, shown whole: `contain`, anchored right and
+     bottom, so nothing is cropped. The hero is at least as tall as the image at full width
+     (capped at 720px), so the image stays large. Its left edge is dark navy; the overlay below is
+     >= 94% there, which hides the seam. */
+  @media (min-width: 1024px) {
+    .hero {
+      flex-direction: row;
+      align-items: center;
+      min-height: min(calc(100vw * 941 / 1672), 720px);
+    }
+
+    /* Both layers sit behind the copy (z-index -1 inside the isolated .hero). ::after, not
+       ::before: at equal z-index tree order decides, and ::after follows the <picture>, so the
+       overlay paints over the image. */
+    .bg-picture,
+    .hero::after {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+
+    .bg {
+      height: 100%;
+      object-fit: contain;
+      object-position: right bottom;
+      mask-image: none;
+    }
+
+    /* Overlay from the left in --bg-primary, so the copy keeps AA over the image. The copy
+       (eyebrow, subhead 40ch) ends ~420px into the centred 1120px container (whose left edge is
+       50% - 560px), so the overlay stays >= 94% to there, then fades so the chart reads. The
+       eyebrow, 15px --text-brand-small, needs ~0.92 over the image's brightest pixels; the h1 is
+       large white text and needs only ~0.5 (3:1). */
+    .hero::after {
+      content: '';
+      background: linear-gradient(
+        90deg,
+        var(--bg-primary) 0%,
+        color-mix(in srgb, var(--bg-primary) 94%, transparent) max(40%, calc(50% - 60px)),
+        color-mix(in srgb, var(--bg-primary) 60%, transparent) max(60%, calc(50% + 140px)),
+        transparent max(85%, calc(50% + 360px))
+      );
+    }
+
+    .inner {
+      padding: 80px 32px 96px;
     }
   }
 

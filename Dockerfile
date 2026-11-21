@@ -23,6 +23,10 @@ COPY package.json package-lock.json .npmrc ./
 RUN npm ci --ignore-scripts
 
 FROM deps AS build
+# The GA4 measurement id is public (it ships in the page), not a secret: Vite inlines PUBLIC_*
+# at build time, and .env is excluded from the context, so it arrives as a build arg.
+# Empty = the site runs with dataLayer only and never loads gtag.js.
+ARG PUBLIC_GA4_ID=""
 COPY . .
 RUN npm run build
 

@@ -6,10 +6,10 @@ import {
   UserResponseSchema,
   type CreateUserInput,
   type Market,
-  type UpdateUserInput,
   type User,
   type UserResponse,
 } from '../schemas/user';
+import type { CreateResult, RepositoryOptions, UsersRepository } from '../../types/users';
 import { getDb } from './db';
 
 type UserRow = {
@@ -55,32 +55,6 @@ const requestHash = (input: CreateUserInput) =>
   createHash('sha256').update(input.email, 'utf8').digest('hex');
 
 type IdempotencyRow = { request_hash: string; response_body: string };
-
-// --- Results: expected failures are values, not exceptions.
-
-export type CreateResult =
-  | { ok: true; user: User; replayed: boolean }
-  | { ok: false; error: 'email_taken' | 'idempotency_key_reused' };
-export type UpdateResult = { ok: true; user: User } | { ok: false; error: 'not_found' };
-export type ListResult =
-  { ok: true; users: User[]; nextCursor: string | null } | { ok: false; error: 'invalid_cursor' };
-
-export type CreateOptions = {
-  /** Validated `Idempotency-Key` header, if the client sent one. */
-  idempotencyKey?: string;
-};
-
-export type UsersRepository = {
-  create(input: CreateUserInput, options?: CreateOptions): CreateResult;
-  update(id: string, input: UpdateUserInput): UpdateResult;
-  findById(id: string): User | null;
-  list(options: { limit: number; cursor?: string }): ListResult;
-};
-
-export type RepositoryOptions = {
-  /** Clock for created_at/updated_at and key expiry; injectable so tests are deterministic. */
-  now?: () => Date;
-};
 
 export function createUsersRepository(
   db: Database.Database,

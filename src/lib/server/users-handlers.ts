@@ -1,6 +1,7 @@
 // Server-only. The Users API handlers: parse -> repository -> response.
 // Dependencies are injected so tests can run them against an in-memory database.
 import { createHash, timingSafeEqual } from 'node:crypto';
+import type { HandlerContext, UsersHandlerDeps } from '../../types/http';
 import {
   CreateUserBodySchema,
   IdempotencyKeySchema,
@@ -11,26 +12,8 @@ import {
   type UserResponse,
 } from '../schemas/user';
 import { errorResponse, internalError, json, readJsonBody, validationError } from './http';
-import { clientIp, createRateLimiter, type RateLimiter } from './rate-limit';
-import { getUsersRepository, type UsersRepository } from './users-repository';
-
-export type UsersHandlerDeps = {
-  getRepository: () => UsersRepository;
-  /** ADMIN_API_TOKEN. Unset or empty disables the list endpoint. */
-  getAdminToken: () => string | undefined;
-  /** Limits POST /api/users per client IP. */
-  rateLimiter: RateLimiter;
-  /** TRUST_PROXY=1: take the client IP from the right-most X-Forwarded-For entry. */
-  getTrustProxy: () => boolean;
-};
-
-/** The subset of Astro's APIContext the handlers use. */
-export type HandlerContext = {
-  request: Request;
-  params: Record<string, string | undefined>;
-  /** The socket peer's address. Astro's getter throws when it is unavailable. */
-  clientAddress?: string;
-};
+import { clientIp, createRateLimiter } from './rate-limit';
+import { getUsersRepository } from './users-repository';
 
 /** Reads `context.clientAddress` without letting Astro's throwing getter escape. */
 function socketAddress(context: HandlerContext): string | undefined {

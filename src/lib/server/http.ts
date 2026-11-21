@@ -1,5 +1,6 @@
 // Server-only. Response helpers that keep every endpoint on the same envelope.
 import type { z } from 'zod';
+import type { BodyResult } from '../../types/http';
 import type { ErrorCode, ErrorResponse } from '../schemas/user';
 
 // 400 is for a body that cannot be parsed at all; 422 for well-formed JSON that fails the
@@ -62,8 +63,6 @@ export function validationError(error: z.ZodError): Response {
 
 /** Largest request body the API accepts. Matches `bodySizeLimit` in astro.config.mjs. */
 export const MAX_BODY_BYTES = 16 * 1024;
-
-export type BodyResult = { ok: true; value: unknown } | { ok: false; response: Response };
 
 const tooLarge = (): BodyResult => ({
   ok: false,
